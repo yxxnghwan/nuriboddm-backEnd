@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+	PUBLIC "-//mybatis.org//DTDMapper3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+	
+	<mapper namespace="com.nuribodeum.mapper.AccountMapper">
+		<insert id="insertManager" parameterType="com.nuribodeum.vo.ManagerVO">
+			INSERT INTO MANAGER
+			VALUES(#{manager_id}, #{password}, #{name}, #{organization}, #{department}, #{phone})
+		</insert>
+		
+		<insert id="insertUser" parameterType="com.nuribodeum.vo.UserVO">
+			INSERT INTO USER
+			VALUES(#{user_id}, #{password}, #{name}, #{age}, #{illness}, #{phone}, #{address}, #{sex}, #{manager_id})
+		</insert>
+		
+		<insert id="insertProtector" parameterType="com.nuribodeum.vo.ProtectorVO">
+			INSERT INTO PROTECTOR
+			VALUES(#{protector_id}, #{password}, #{name}, #{phone}, #{user_id})
+		</insert>
+		
+		<insert id="insertHelper" parameterType="com.nuribodeum.vo.HelperVO">
+			INSERT INTO HELPER
+			VALUES(#{helper_id}, #{password}, #{name}, #{age}, #{organization}, #{phone})
+		</insert>
+		
+		<select id="getManager" parameterType="String" resultType="com.nuribodeum.vo.ManagerVO">
+			SELECT * FROM MANAGER
+			WHERE manager_id = #{manager_id}
+		</select>
+		
+	</mapper>
