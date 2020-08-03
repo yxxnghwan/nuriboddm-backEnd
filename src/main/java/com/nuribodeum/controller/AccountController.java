@@ -79,7 +79,7 @@ public class AccountController {
 	
 	@PostMapping("/helper")
 	public void postHelper(HttpServletRequest request, HttpServletResponse response, @RequestBody HelperVO vo) {
-		System.out.println("보호자 추가");
+		System.out.println("보드미 추가");
 		System.out.println(vo);
 		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
 		System.out.println("비크립트 해시 : " + vo.getPassword());
