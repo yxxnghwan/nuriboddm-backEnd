@@ -17,6 +17,7 @@ import com.nuribodeum.config.LoginManagementService;
 import com.nuribodeum.mapper.AccountMapper;
 import com.nuribodeum.vo.AccountVO;
 import com.nuribodeum.vo.ManagerVO;
+import com.nuribodeum.vo.UserVO;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
@@ -35,7 +36,28 @@ public class AccountController {
 		System.out.println(vo);
 		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
 		System.out.println("비크립트 해시 : " + vo.getPassword());
-		accountMapper.insertManager(vo);
+		try {
+			accountMapper.insertManager(vo);
+			response.setStatus(HttpStatus.CREATED.value());
+		} catch (Exception e) {
+			System.out.println("이미 있는 아이디");
+			response.setStatus(HttpStatus.CONFLICT.value());
+		}
+	}
+	
+	@PostMapping("/user")
+	public void postUser(HttpServletRequest request, HttpServletResponse response, @RequestBody UserVO vo) {
+		System.out.println("유저 추가");
+		System.out.println(vo);
+		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+		System.out.println("비크립트 해시 : " + vo.getPassword());
+		try {
+			accountMapper.insertUser(vo);
+			response.setStatus(HttpStatus.CREATED.value());
+		} catch (Exception e) {
+			System.out.println("이미 있는 아이디");
+			response.setStatus(HttpStatus.CONFLICT.value());
+		}
 	}
 	
 	
