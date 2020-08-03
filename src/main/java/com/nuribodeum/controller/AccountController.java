@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.nuribodeum.config.LoginManagementService;
 import com.nuribodeum.mapper.AccountMapper;
 import com.nuribodeum.vo.AccountVO;
+import com.nuribodeum.vo.HelperVO;
 import com.nuribodeum.vo.ManagerVO;
 import com.nuribodeum.vo.ProtectorVO;
 import com.nuribodeum.vo.UserVO;
@@ -76,10 +77,25 @@ public class AccountController {
 		}
 	}
 	
+	@PostMapping("/helper")
+	public void postHelper(HttpServletRequest request, HttpServletResponse response, @RequestBody HelperVO vo) {
+		System.out.println("보호자 추가");
+		System.out.println(vo);
+		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+		System.out.println("비크립트 해시 : " + vo.getPassword());
+		try {
+			accountMapper.insertHelper(vo);
+			response.setStatus(HttpStatus.CREATED.value());
+		} catch (Exception e) {
+			System.out.println("이미 있는 아이디");
+			response.setStatus(HttpStatus.CONFLICT.value());
+		}
+	}
+	
 	
 	
 	@PostMapping("/auth")
-	public String loginManager(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
+	public String loginAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
 		System.out.println("로그인하기");
 		String loginID = null;
 		if(vo.getAccount_type().equals("manager")) {
