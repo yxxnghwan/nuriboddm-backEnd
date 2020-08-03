@@ -1,9 +1,11 @@
 package com.nuribodeum.controller;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nuribodeum.config.LoginManagementService;
 import com.nuribodeum.mapper.AccountMapper;
 import com.nuribodeum.vo.AccountVO;
 import com.nuribodeum.vo.ManagerVO;
@@ -19,6 +22,9 @@ import com.nuribodeum.vo.ManagerVO;
 @RestController
 @RequestMapping("/accounts")
 public class AccountController {
+	
+	@Autowired
+	LoginManagementService loginManagementService;
 
 	@Autowired
 	AccountMapper accountMapper;
@@ -32,24 +38,36 @@ public class AccountController {
 		accountMapper.insertManager(vo);
 	}
 	
+	
+	
 	@PostMapping("/auth")
 	public String loginManager(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
 		System.out.println("로그인하기");
+		String loginID = null;
 		if(vo.getAccount_type().equals("manager")) {
-			// db에서 아이디로 찾아서 vo를 불러오고 그 vo 비밀번호랑 입력받은 password랑 checkpw해서 로그인성공 실패 하면댐
 			ManagerVO manager = accountMapper.getManager(vo.getId());
 			if(manager == null) {
 				System.out.println("아이디 없음");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 			} else {
 				System.out.println("아이디 있음");
 				if(BCrypt.checkpw(vo.getPassword(), manager.getPassword())) { // 비밀번호 일치
 					System.out.println("로그인 성공");
+					loginID = manager.getManager_id();
+					String jwt = loginManagementService.createJWT(vo);
+					Cookie cookie = new Cookie("nuribodeumJWT",jwt);
+					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
+					cookie.setPath("/");
+					cookie.setHttpOnly(true);
+					response.addCookie(cookie);
+					response.setStatus(HttpStatus.OK.value());
+					
 				} else { // 비밀번호 틀림
 					System.out.println("비밀번호 오류");
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
 				}
 			}
-			return manager.getManager_id();
 		}
-		return "";
+		return loginID;
 	}
 }
