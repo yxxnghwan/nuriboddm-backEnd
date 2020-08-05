@@ -29,4 +29,11 @@
 			WHERE manager_id = #{manager_id}
 		</select>
 		
+		<update id="updateManager" parameterType="com.nuribodeum.vo.ManagerVO">
+			UPDATE MANAGER
+			SET password = #{password}, name = #{name}, organization = #{organization}
+			, department = #{department}, phone = #{phone}
+			WHERE manager_id = #{manager_id}
+		</update>
+		
 	</mapper>

@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -93,7 +94,6 @@ public class AccountController {
 	}
 	
 	
-	
 	@PostMapping("/auth")
 	public String loginAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
 		System.out.println("로그인하기");
@@ -124,4 +124,17 @@ public class AccountController {
 		}
 		return loginID;
 	}
+	
+	@PutMapping("/manager")
+	public void updateManager(HttpServletRequest request, HttpServletResponse response, @RequestBody ManagerVO vo) {
+		System.out.println("매니저 수정");
+		System.out.println(vo);
+		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+		System.out.println("비크립트 해시 : " + vo.getPassword());
+		
+		accountMapper.updateManager(vo);
+		response.setStatus(HttpStatus.OK.value());
+	}
+	
+	
 }

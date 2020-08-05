@@ -9,11 +9,15 @@ import com.nuribodeum.vo.UserVO;
 
 @Mapper
 public interface AccountMapper {
+	// C
 	void insertManager(ManagerVO vo);
 	void insertUser(UserVO vo);
 	void insertProtector(ProtectorVO vo);
 	void insertHelper(HelperVO vo);
 	
+	// R
 	ManagerVO getManager(String manager_id);
 	
+	// U
+	void updateManager(ManagerVO vo);
 }
