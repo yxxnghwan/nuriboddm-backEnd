@@ -153,6 +153,17 @@ public class AccountController {
 		response.setStatus(HttpStatus.OK.value());
 	}
 	
+	@PutMapping("/protector")
+	public void updateProtector(HttpServletRequest request, HttpServletResponse response, @RequestBody ProtectorVO vo) {
+		System.out.println("유저 수정");
+		System.out.println(vo);
+		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+		System.out.println("비크립트 해시 : " + vo.getPassword());
+		
+		accountMapper.updateProtector(vo);
+		response.setStatus(HttpStatus.OK.value());
+	}
+	
 	
 	@DeleteMapping("/")
 	public void deleteAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
