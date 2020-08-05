@@ -13,6 +13,7 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -112,10 +113,79 @@ public class AccountController {
 			} else {
 				System.out.println("아이디 있음");
 				if(BCrypt.checkpw(vo.getPassword(), manager.getPassword())) { // 비밀번호 일치
-					System.out.println("로그인 성공");
+					System.out.println("매니저 로그인 성공");
 					loginID = manager.getManager_id();
 					String jwt = loginManagementService.createJWT(vo);
-					Cookie cookie = new Cookie("nuribodeumJWT",jwt);
+					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
+					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
+					cookie.setPath("/");
+					cookie.setHttpOnly(true);
+					response.addCookie(cookie);
+					response.setStatus(HttpStatus.OK.value());
+					
+				} else { // 비밀번호 틀림
+					System.out.println("비밀번호 오류");
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				}
+			}
+		} else if(vo.getAccount_type().equals("user")) {
+			UserVO user = accountMapper.getUser(vo.getId());
+			if(user == null) {
+				System.out.println("아이디 없음");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			} else {
+				System.out.println("아이디 있음");
+				if(BCrypt.checkpw(vo.getPassword(), user.getPassword())) { // 비밀번호 일치
+					System.out.println("누리미 로그인 성공");
+					loginID = user.getUser_id();
+					String jwt = loginManagementService.createJWT(vo);
+					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
+					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
+					cookie.setPath("/");
+					cookie.setHttpOnly(true);
+					response.addCookie(cookie);
+					response.setStatus(HttpStatus.OK.value());
+					
+				} else { // 비밀번호 틀림
+					System.out.println("비밀번호 오류");
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				}
+			}
+		} else if(vo.getAccount_type().equals("protector")) {
+			ProtectorVO protector = accountMapper.getProtector(vo.getId());
+			if(protector == null) {
+				System.out.println("아이디 없음");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			} else {
+				System.out.println("아이디 있음");
+				if(BCrypt.checkpw(vo.getPassword(), protector.getPassword())) { // 비밀번호 일치
+					System.out.println("보호자 로그인 성공");
+					loginID = protector.getProtector_id();
+					String jwt = loginManagementService.createJWT(vo);
+					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
+					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
+					cookie.setPath("/");
+					cookie.setHttpOnly(true);
+					response.addCookie(cookie);
+					response.setStatus(HttpStatus.OK.value());
+					
+				} else { // 비밀번호 틀림
+					System.out.println("비밀번호 오류");
+					response.setStatus(HttpStatus.UNAUTHORIZED.value());
+				}
+			}
+		} else if(vo.getAccount_type().equals("helper")) {
+			HelperVO helper = accountMapper.getHelper(vo.getId());
+			if(helper == null) {
+				System.out.println("아이디 없음");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			} else {
+				System.out.println("아이디 있음");
+				if(BCrypt.checkpw(vo.getPassword(), helper.getPassword())) { // 비밀번호 일치
+					System.out.println("보드미 로그인 성공");
+					loginID = helper.getHelper_id();
+					String jwt = loginManagementService.createJWT(vo);
+					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
 					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
 					cookie.setPath("/");
 					cookie.setHttpOnly(true);
@@ -161,6 +231,13 @@ public class AccountController {
 		System.out.println(vo);
 		accountMapper.updateHelper(vo);
 		response.setStatus(HttpStatus.OK.value());
+	}
+	
+	@PatchMapping("/password")
+	public void updatePassword(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
+		System.out.println("비밀번호 변경");
+		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+		accountMapper.updatePassword(vo);
 	}
 	
 	

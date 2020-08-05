@@ -73,6 +73,18 @@
 			WHERE helper_id = #{helper_id}
 		</update>
 		
+		<update id="updatePassword" parameterType="com.nuribodeum.vo.AccountVO">
+			UPDATE <if test="account_type.equals('manager')">MANAGER</if>
+			       <if test="account_type.equals('user')">USER</if>
+			       <if test="account_type.equals('protector')">PROTECTOR</if>
+			       <if test="account_type.equals('helper')">HELPER</if>
+			SET password = #{password}
+			WHERE <if test="account_type.equals('manager')">manager_id = #{id}</if>
+			      <if test="account_type.equals('user')">user_id = #{id}</if>
+			      <if test="account_type.equals('protector')">protector_id = #{id}</if>
+			      <if test="account_type.equals('helper')">helper_id = #{id}</if>
+		</update>
+		
 		<delete id="deleteManager" parameterType="String">
 			DELETE FROM MANAGER
 			WHERE manager_id = #{manager_id}

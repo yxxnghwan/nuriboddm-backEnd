@@ -2,6 +2,7 @@ package com.nuribodeum.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
 
+import com.nuribodeum.vo.AccountVO;
 import com.nuribodeum.vo.HelperVO;
 import com.nuribodeum.vo.ManagerVO;
 import com.nuribodeum.vo.ProtectorVO;
@@ -26,6 +27,7 @@ public interface AccountMapper {
 	void updateUser(UserVO vo);
 	void updateProtector(ProtectorVO vo);
 	void updateHelper(HelperVO vo);
+	void updatePassword(AccountVO vo);
 	
 	// D
 	void deleteManager(String manager_id);
