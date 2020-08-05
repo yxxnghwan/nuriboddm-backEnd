@@ -17,6 +17,9 @@ public interface AccountMapper {
 	
 	// R
 	ManagerVO getManager(String manager_id);
+	UserVO getUser(String user_id);
+	ProtectorVO getProtector(String protector_id);
+	HelperVO getHelper(String helper_id);
 	
 	// U
 	void updateManager(ManagerVO vo);

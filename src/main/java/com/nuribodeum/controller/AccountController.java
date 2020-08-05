@@ -12,6 +12,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -175,9 +177,27 @@ public class AccountController {
 			System.out.println("삭제할 수 없음!! 하위레코드가 남아있을 수 있음");
 			response.setStatus(HttpStatus.FORBIDDEN.value());
 		}
-		
-		
-		
+	}
+	
+	@GetMapping("manager/{id}")
+	public ManagerVO getManager(@PathVariable("id") String manager_id) {
+		System.out.println("매니저 얻기 : " + manager_id);
+		return accountMapper.getManager(manager_id);
+	}
+	@GetMapping("user/{id}")
+	public UserVO getUser(@PathVariable("id") String user_id) {
+		System.out.println("매니저 얻기 : " + user_id);
+		return accountMapper.getUser(user_id);
+	}
+	@GetMapping("protector/{id}")
+	public ProtectorVO getProtector(@PathVariable("id") String protector_id) {
+		System.out.println("매니저 얻기 : " + protector_id);
+		return accountMapper.getProtector(protector_id);
+	}
+	@GetMapping("helper/{id}")
+	public HelperVO getHelper(@PathVariable("id") String helper_id) {
+		System.out.println("매니저 얻기 : " + helper_id);
+		return accountMapper.getHelper(helper_id);
 	}
 	
 }

@@ -29,6 +29,21 @@
 			WHERE manager_id = #{manager_id}
 		</select>
 		
+		<select id="getUser" parameterType="String" resultType="com.nuribodeum.vo.UserVO">
+			SELECT * FROM USER
+			WHERE user_id = #{user_id}
+		</select>
+		
+		<select id="getProtector" parameterType="String" resultType="com.nuribodeum.vo.ProtectorVO">
+			SELECT * FROM PROTECTOR
+			WHERE protector_id = #{protector_id}
+		</select>
+		
+		<select id="getHelper" parameterType="String" resultType="com.nuribodeum.vo.HelperVO">
+			SELECT * FROM HELPER
+			WHERE helper_id = #{helper_id}
+		</select>
+		
 		<update id="updateManager" parameterType="com.nuribodeum.vo.ManagerVO">
 			UPDATE MANAGER
 			SET password = #{password}, name = #{name}, organization = #{organization}
