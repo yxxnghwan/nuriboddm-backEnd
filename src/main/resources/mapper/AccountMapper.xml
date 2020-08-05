@@ -46,9 +46,31 @@
 		
 		<update id="updateManager" parameterType="com.nuribodeum.vo.ManagerVO">
 			UPDATE MANAGER
-			SET password = #{password}, name = #{name}, organization = #{organization}
+			SET  name = #{name}, organization = #{organization}
 			, department = #{department}, phone = #{phone}
 			WHERE manager_id = #{manager_id}
+		</update>
+		
+		<update id="updateUser" parameterType="com.nuribodeum.vo.UserVO">
+			UPDATE USER
+			SET  name = #{name}, age = #{age}
+			, illness = #{illness}, phone = #{phone}, address = #{address}
+			, sex = #{sex}, manager_id = #{manager_id}
+			WHERE user_id = #{user_id}
+		</update>
+		
+		<update id="updateProtector" parameterType="com.nuribodeum.vo.ProtectorVO">
+			UPDATE PROTECTOR
+			SET  name = #{name}, phone = #{phone}
+			, user_id = #{user_id}
+			WHERE protector_id = #{protector_id}
+		</update>
+		
+		<update id="updateHelper" parameterType="com.nuribodeum.vo.HelperVO">
+			UPDATE HELPER
+			SET  name = #{name}, phone = #{phone}
+			, age = #{age}, organization = #{organization}
+			WHERE helper_id = #{helper_id}
 		</update>
 		
 		<delete id="deleteManager" parameterType="String">

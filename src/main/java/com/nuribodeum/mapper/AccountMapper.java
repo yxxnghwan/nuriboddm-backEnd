@@ -23,6 +23,9 @@ public interface AccountMapper {
 	
 	// U
 	void updateManager(ManagerVO vo);
+	void updateUser(UserVO vo);
+	void updateProtector(ProtectorVO vo);
+	void updateHelper(HelperVO vo);
 	
 	// D
 	void deleteManager(String manager_id);

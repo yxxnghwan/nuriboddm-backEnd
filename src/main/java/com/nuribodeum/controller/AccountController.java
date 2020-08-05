@@ -49,7 +49,7 @@ public class AccountController {
 			accountMapper.insertManager(vo);
 			response.setStatus(HttpStatus.CREATED.value());
 		} catch (Exception e) {
-			System.out.println("이미 있는 아이디");
+			e.printStackTrace();
 			response.setStatus(HttpStatus.CONFLICT.value());
 		}
 	}
@@ -64,7 +64,7 @@ public class AccountController {
 			accountMapper.insertUser(vo);
 			response.setStatus(HttpStatus.CREATED.value());
 		} catch (Exception e) {
-			System.out.println("이미 있는 아이디");
+			e.printStackTrace();
 			response.setStatus(HttpStatus.CONFLICT.value());
 		}
 	}
@@ -79,7 +79,7 @@ public class AccountController {
 			accountMapper.insertProtector(vo);
 			response.setStatus(HttpStatus.CREATED.value());
 		} catch (Exception e) {
-			System.out.println("이미 있는 아이디");
+			e.printStackTrace();
 			response.setStatus(HttpStatus.CONFLICT.value());
 		}
 	}
@@ -94,7 +94,7 @@ public class AccountController {
 			accountMapper.insertHelper(vo);
 			response.setStatus(HttpStatus.CREATED.value());
 		} catch (Exception e) {
-			System.out.println("이미 있는 아이디");
+			e.printStackTrace();
 			response.setStatus(HttpStatus.CONFLICT.value());
 		}
 	}
@@ -142,6 +142,18 @@ public class AccountController {
 		response.setStatus(HttpStatus.OK.value());
 	}
 	
+	@PutMapping("/user")
+	public void updateUser(HttpServletRequest request, HttpServletResponse response, @RequestBody UserVO vo) {
+		System.out.println("유저 수정");
+		System.out.println(vo);
+		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+		System.out.println("비크립트 해시 : " + vo.getPassword());
+		
+		accountMapper.updateUser(vo);
+		response.setStatus(HttpStatus.OK.value());
+	}
+	
+	
 	@DeleteMapping("/")
 	public void deleteAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
 		System.out.println("계정삭제");
@@ -174,6 +186,7 @@ public class AccountController {
 			}
 		} catch (Exception e) {
 			// TODO: handle exception
+			e.printStackTrace();
 			System.out.println("삭제할 수 없음!! 하위레코드가 남아있을 수 있음");
 			response.setStatus(HttpStatus.FORBIDDEN.value());
 		}
