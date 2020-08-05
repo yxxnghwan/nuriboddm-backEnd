@@ -36,4 +36,21 @@
 			WHERE manager_id = #{manager_id}
 		</update>
 		
+		<delete id="deleteManager" parameterType="String">
+			DELETE FROM MANAGER
+			WHERE manager_id = #{manager_id}
+		</delete>
+		<delete id="deleteUser" parameterType="String">
+			DELETE FROM USER
+			WHERE user_id = #{user_id}
+		</delete>
+		<delete id="deleteProtector" parameterType="String">
+			DELETE FROM PROTECTOR
+			WHERE protector_id = #{protector_id}
+		</delete>
+		<delete id="deleteHelper" parameterType="String">
+			DELETE FROM HELPER
+			WHERE helper_id = #{helper_id}
+		</delete>
+		
 	</mapper>

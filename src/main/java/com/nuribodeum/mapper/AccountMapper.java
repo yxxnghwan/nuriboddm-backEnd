@@ -20,4 +20,10 @@ public interface AccountMapper {
 	
 	// U
 	void updateManager(ManagerVO vo);
+	
+	// D
+	void deleteManager(String manager_id);
+	void deleteUser(String user_id);
+	void deleteProtector(String protector_id);
+	void deleteHelper(String helper_id);
 }

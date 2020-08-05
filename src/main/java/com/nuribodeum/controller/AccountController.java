@@ -1,13 +1,17 @@
 package com.nuribodeum.controller;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.ibatis.binding.BindingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -136,5 +140,44 @@ public class AccountController {
 		response.setStatus(HttpStatus.OK.value());
 	}
 	
+	@DeleteMapping("/")
+	public void deleteAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
+		System.out.println("계정삭제");
+		try {
+			switch (vo.getAccount_type()) {
+				case "manager":
+					System.out.println("매니저삭제");
+					accountMapper.deleteManager(vo.getId());
+					response.setStatus(HttpStatus.OK.value());
+					break;
+				case "user" :
+					System.out.println("누리미삭제");
+					accountMapper.deleteUser(vo.getId());
+					response.setStatus(HttpStatus.OK.value());
+					break;
+				case "protector" :
+					System.out.println("보호자삭제");
+					accountMapper.deleteProtector(vo.getId());
+					response.setStatus(HttpStatus.OK.value());
+					break;
+				case "helper" :
+					System.out.println("보드미삭제");
+					accountMapper.deleteHelper(vo.getId());
+					response.setStatus(HttpStatus.OK.value());
+					break;
+				default:
+					System.out.println("account_type 오류!");
+					response.setStatus(HttpStatus.BAD_REQUEST.value());
+					break;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println("삭제할 수 없음!! 하위레코드가 남아있을 수 있음");
+			response.setStatus(HttpStatus.FORBIDDEN.value());
+		}
+		
+		
+		
+	}
 	
 }
