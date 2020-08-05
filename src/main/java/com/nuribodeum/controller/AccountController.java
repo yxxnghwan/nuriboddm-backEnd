@@ -135,32 +135,31 @@ public class AccountController {
 	public void updateManager(HttpServletRequest request, HttpServletResponse response, @RequestBody ManagerVO vo) {
 		System.out.println("매니저 수정");
 		System.out.println(vo);
-		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-		System.out.println("비크립트 해시 : " + vo.getPassword());
-		
 		accountMapper.updateManager(vo);
 		response.setStatus(HttpStatus.OK.value());
 	}
 	
 	@PutMapping("/user")
 	public void updateUser(HttpServletRequest request, HttpServletResponse response, @RequestBody UserVO vo) {
-		System.out.println("유저 수정");
+		System.out.println("누리미 수정");
 		System.out.println(vo);
-		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-		System.out.println("비크립트 해시 : " + vo.getPassword());
-		
 		accountMapper.updateUser(vo);
 		response.setStatus(HttpStatus.OK.value());
 	}
 	
 	@PutMapping("/protector")
 	public void updateProtector(HttpServletRequest request, HttpServletResponse response, @RequestBody ProtectorVO vo) {
-		System.out.println("유저 수정");
+		System.out.println("보호자 수정");
 		System.out.println(vo);
-		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-		System.out.println("비크립트 해시 : " + vo.getPassword());
-		
 		accountMapper.updateProtector(vo);
+		response.setStatus(HttpStatus.OK.value());
+	}
+	
+	@PutMapping("/helper")
+	public void updateHelper(HttpServletRequest request, HttpServletResponse response, @RequestBody HelperVO vo) {
+		System.out.println("보드미 수정");
+		System.out.println(vo);
+		accountMapper.updateHelper(vo);
 		response.setStatus(HttpStatus.OK.value());
 	}
 	
