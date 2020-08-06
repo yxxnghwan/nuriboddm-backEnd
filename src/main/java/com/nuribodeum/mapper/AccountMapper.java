@@ -1,5 +1,7 @@
 package com.nuribodeum.mapper;
 
+import java.util.List;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import com.nuribodeum.vo.AccountVO;
@@ -21,6 +23,11 @@ public interface AccountMapper {
 	UserVO getUser(String user_id);
 	ProtectorVO getProtector(String protector_id);
 	HelperVO getHelper(String helper_id);
+	
+	List<ManagerVO> getManagerList();
+	List<UserVO> getUserList();
+	List<ProtectorVO> getProtectorList();
+	List<HelperVO> getHelperList();
 	
 	// U
 	void updateManager(ManagerVO vo);

@@ -1,6 +1,7 @@
 package com.nuribodeum.controller;
 
 import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.List;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -376,5 +377,26 @@ public class AccountController {
 	public HelperVO getHelper(@PathVariable("id") String helper_id) {
 		System.out.println("보드미 얻기 : " + helper_id);
 		return accountMapper.getHelper(helper_id);
+	}
+	
+	@GetMapping("list/manager")
+	public List<ManagerVO> getMangerList(){
+		System.out.println("관리자리스트요청");
+		return accountMapper.getManagerList();
+	}
+	@GetMapping("list/user")
+	public List<UserVO> getUserList(){
+		System.out.println("누리미리스트요청");
+		return accountMapper.getUserList();
+	}
+	@GetMapping("list/protector")
+	public List<ProtectorVO> getProtectorList(){
+		System.out.println("보호자리스트요청");
+		return accountMapper.getProtectorList();
+	}
+	@GetMapping("list/helper")
+	public List<HelperVO> getHelperList(){
+		System.out.println("보드미리스트요청");
+		return accountMapper.getHelperList();
 	}
 }

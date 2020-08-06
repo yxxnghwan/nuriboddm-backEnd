@@ -44,6 +44,22 @@
 			WHERE helper_id = #{helper_id}
 		</select>
 		
+		<select id="getManagerList" resultType="com.nuribodeum.vo.ManagerVO">
+			SELECT * FROM MANAGER
+		</select>
+		
+		<select id="getUserList" resultType="com.nuribodeum.vo.UserVO">
+			SELECT * FROM USER
+		</select>
+		
+		<select id="getProtectorList" resultType="com.nuribodeum.vo.ProtectorVO">
+			SELECT * FROM PROTECTOR
+		</select>
+		
+		<select id="getHelperList" resultType="com.nuribodeum.vo.HelperVO">
+			SELECT * FROM HELPER
+		</select>
+		
 		<update id="updateManager" parameterType="com.nuribodeum.vo.ManagerVO">
 			UPDATE MANAGER
 			SET  name = #{name}, organization = #{organization}
