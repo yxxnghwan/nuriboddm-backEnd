@@ -88,21 +88,27 @@ public class AccountController {
 		System.out.println("보호자 추가");
 		System.out.println(vo);
 		AccountVO account = loginManagementService.signInCheck(request, response);
-		if(account.getAccount_type().equals("manager")) {
-			System.out.println("관리자 인증 성공");
-			vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-			System.out.println("비크립트 해시 : " + vo.getPassword());
-			try {
-				accountMapper.insertProtector(vo);
-				response.setStatus(HttpStatus.CREATED.value());
-			} catch (Exception e) {
-				e.printStackTrace();
-				response.setStatus(HttpStatus.CONFLICT.value());
+		if(account != null) {
+			if(account.getAccount_type().equals("manager")) {
+				System.out.println("관리자 인증 성공");
+				vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+				System.out.println("비크립트 해시 : " + vo.getPassword());
+				try {
+					accountMapper.insertProtector(vo);
+					response.setStatus(HttpStatus.CREATED.value());
+				} catch (Exception e) {
+					e.printStackTrace();
+					response.setStatus(HttpStatus.CONFLICT.value());
+				}
+			} else {
+				System.out.println("관리자만 보호자를 추가할 수 있습니다.");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 			}
 		} else {
-			System.out.println("관리자만 보호자를 추가할 수 있습니다.");
+			System.out.println("로그인 했나요..?");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
+		
 	}
 	
 	@PostMapping("/helper")
@@ -244,62 +250,111 @@ public class AccountController {
 	public void updateProtector(HttpServletRequest request, HttpServletResponse response, @RequestBody ProtectorVO vo) {
 		System.out.println("보호자 수정");
 		System.out.println(vo);
-		accountMapper.updateProtector(vo);
-		response.setStatus(HttpStatus.OK.value());
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account != null) {
+			if(account.getAccount_type().equals("manager") ||		// 관리자계정이거나 보호자 본인일 경우만
+					(account.getAccount_type().equals("protector") && account.getId().equals(vo.getProtector_id()))) {
+				accountMapper.updateProtector(vo);
+				response.setStatus(HttpStatus.OK.value());
+			} else {
+				System.out.println("인증실패");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			}
+		} else {
+			System.out.println("로그인 하셨나요..?");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
 	}
 	
 	@PutMapping("/helper")
 	public void updateHelper(HttpServletRequest request, HttpServletResponse response, @RequestBody HelperVO vo) {
 		System.out.println("보드미 수정");
 		System.out.println(vo);
-		accountMapper.updateHelper(vo);
-		response.setStatus(HttpStatus.OK.value());
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account != null) {
+			if(account.getAccount_type().equals("manager") ||		// 관리자계정이거나 보드미 본인일 경우만
+					(account.getAccount_type().equals("helper") && account.getId().equals(vo.getHelper_id()))) {
+				accountMapper.updateHelper(vo);
+				response.setStatus(HttpStatus.OK.value());
+			} else {
+				System.out.println("인증실패");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			}
+		} else {
+			System.out.println("로그인 하셨나요..?");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
 	}
 	
 	@PatchMapping("/password")
 	public void updatePassword(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
 		System.out.println("비밀번호 변경");
-		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-		accountMapper.updatePassword(vo);
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account != null) {
+			if(account.getId().equals(vo.getId())) { // 로그인 된 본인이면
+				vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+				accountMapper.updatePassword(vo);
+				response.setStatus(HttpStatus.OK.value());
+			} else {
+				System.out.println("본인만 비번 바꾸기 가능");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			}
+		} else {
+			System.out.println("로그인 하셨나요..?");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
 	}
 	
 	
 	@DeleteMapping("/")
 	public void deleteAccount(HttpServletRequest request, HttpServletResponse response, @RequestBody AccountVO vo) {
 		System.out.println("계정삭제");
-		try {
-			switch (vo.getAccount_type()) {
-				case "manager":
-					System.out.println("매니저삭제");
-					accountMapper.deleteManager(vo.getId());
-					response.setStatus(HttpStatus.OK.value());
-					break;
-				case "user" :
-					System.out.println("누리미삭제");
-					accountMapper.deleteUser(vo.getId());
-					response.setStatus(HttpStatus.OK.value());
-					break;
-				case "protector" :
-					System.out.println("보호자삭제");
-					accountMapper.deleteProtector(vo.getId());
-					response.setStatus(HttpStatus.OK.value());
-					break;
-				case "helper" :
-					System.out.println("보드미삭제");
-					accountMapper.deleteHelper(vo.getId());
-					response.setStatus(HttpStatus.OK.value());
-					break;
-				default:
-					System.out.println("account_type 오류!");
-					response.setStatus(HttpStatus.BAD_REQUEST.value());
-					break;
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account != null) {
+			if(account.getAccount_type().equals("manager") || // 관리자거나 아이디본인
+					(account.getAccount_type().equals(vo.getAccount_type())&&account.getId().equals(vo.getId()))) { 
+				try {
+					switch (vo.getAccount_type()) {
+						case "manager":
+							System.out.println("매니저삭제");
+							accountMapper.deleteManager(vo.getId());
+							response.setStatus(HttpStatus.OK.value());
+							break;
+						case "user" :
+							System.out.println("누리미삭제");
+							accountMapper.deleteUser(vo.getId());
+							response.setStatus(HttpStatus.OK.value());
+							break;
+						case "protector" :
+							System.out.println("보호자삭제");
+							accountMapper.deleteProtector(vo.getId());
+							response.setStatus(HttpStatus.OK.value());
+							break;
+						case "helper" :
+							System.out.println("보드미삭제");
+							accountMapper.deleteHelper(vo.getId());
+							response.setStatus(HttpStatus.OK.value());
+							break;
+						default:
+							System.out.println("account_type 오류!");
+							response.setStatus(HttpStatus.BAD_REQUEST.value());
+							break;
+					}
+				} catch (Exception e) {
+					// TODO: handle exception
+					e.printStackTrace();
+					System.out.println("삭제할 수 없음!! 하위레코드가 남아있을 수 있음");
+					response.setStatus(HttpStatus.FORBIDDEN.value());
+				}
+			} else {
+				System.out.println("관리자거나 본인만 탈퇴 가능합니다");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 			}
-		} catch (Exception e) {
-			// TODO: handle exception
-			e.printStackTrace();
-			System.out.println("삭제할 수 없음!! 하위레코드가 남아있을 수 있음");
-			response.setStatus(HttpStatus.FORBIDDEN.value());
+		} else {
+			System.out.println("로그인 하셨나요..?");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
+		
 	}
 	
 	@GetMapping("manager/{id}")
