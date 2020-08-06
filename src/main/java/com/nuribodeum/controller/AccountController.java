@@ -60,20 +60,26 @@ public class AccountController {
 		System.out.println("누리미 추가");
 		System.out.println(vo);
 		AccountVO account = loginManagementService.signInCheck(request, response);
-		if(account.getAccount_type().equals("manager")) {
-			vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-			System.out.println("비크립트 해시 : " + vo.getPassword());
-			try {
-				accountMapper.insertUser(vo);
-				response.setStatus(HttpStatus.CREATED.value());
-			} catch (Exception e) {
-				e.printStackTrace();
-				response.setStatus(HttpStatus.CONFLICT.value());
+		if(account != null) {
+			if(account.getAccount_type().equals("manager")) {
+				vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+				System.out.println("비크립트 해시 : " + vo.getPassword());
+				try {
+					accountMapper.insertUser(vo);
+					response.setStatus(HttpStatus.CREATED.value());
+				} catch (Exception e) {
+					e.printStackTrace();
+					response.setStatus(HttpStatus.CONFLICT.value());
+				}
+			} else {
+				System.out.println("관리자만 누리미를 추가할 수 있습니다.");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
 			}
 		} else {
-			System.out.println("관리자만 누리미를 추가할 수 있습니다.");
+			System.out.println("로그인 했나요..?");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
+		
 		
 	}
 	
@@ -303,17 +309,17 @@ public class AccountController {
 	}
 	@GetMapping("user/{id}")
 	public UserVO getUser(@PathVariable("id") String user_id) {
-		System.out.println("매니저 얻기 : " + user_id);
+		System.out.println("누리미 얻기 : " + user_id);
 		return accountMapper.getUser(user_id);
 	}
 	@GetMapping("protector/{id}")
 	public ProtectorVO getProtector(@PathVariable("id") String protector_id) {
-		System.out.println("매니저 얻기 : " + protector_id);
+		System.out.println("보호자 얻기 : " + protector_id);
 		return accountMapper.getProtector(protector_id);
 	}
 	@GetMapping("helper/{id}")
 	public HelperVO getHelper(@PathVariable("id") String helper_id) {
-		System.out.println("매니저 얻기 : " + helper_id);
+		System.out.println("보드미 얻기 : " + helper_id);
 		return accountMapper.getHelper(helper_id);
 	}
 }

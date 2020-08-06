@@ -5,23 +5,23 @@
 	
 	<mapper namespace="com.nuribodeum.mapper.AccountMapper">
 		<insert id="insertManager" parameterType="com.nuribodeum.vo.ManagerVO">
-			INSERT INTO MANAGER
+			INSERT INTO MANAGER(manager_id, password, name, organization, department, phone)
 			VALUES(#{manager_id}, #{password}, #{name}, #{organization}, #{department}, #{phone})
 		</insert>
 		
 		<insert id="insertUser" parameterType="com.nuribodeum.vo.UserVO">
-			INSERT INTO USER
-			VALUES(#{user_id}, #{password}, #{name}, #{age}, #{illness}, #{phone}, #{address}, #{sex}, #{manager_id})
+			INSERT INTO USER(user_id, password, name, date_of_birth, illness, phone, address, sex, manager_id)
+			VALUES(#{user_id}, #{password}, #{name}, #{date_of_birth}, #{illness}, #{phone}, #{address}, #{sex}, #{manager_id})
 		</insert>
 		
 		<insert id="insertProtector" parameterType="com.nuribodeum.vo.ProtectorVO">
-			INSERT INTO PROTECTOR
+			INSERT INTO PROTECTOR(protector_id, password, name, phone, user_id)
 			VALUES(#{protector_id}, #{password}, #{name}, #{phone}, #{user_id})
 		</insert>
 		
 		<insert id="insertHelper" parameterType="com.nuribodeum.vo.HelperVO">
-			INSERT INTO HELPER
-			VALUES(#{helper_id}, #{password}, #{name}, #{age}, #{organization}, #{phone})
+			INSERT INTO HELPER(helper_id, password, name, date_of_birth, organization, phone)
+			VALUES(#{helper_id}, #{password}, #{name}, #{date_of_birth}, #{organization}, #{phone})
 		</insert>
 		
 		<select id="getManager" parameterType="String" resultType="com.nuribodeum.vo.ManagerVO">
@@ -53,7 +53,7 @@
 		
 		<update id="updateUser" parameterType="com.nuribodeum.vo.UserVO">
 			UPDATE USER
-			SET  name = #{name}, age = #{age}
+			SET  name = #{name}, date_if_birth = #{date_if_birth}
 			, illness = #{illness}, phone = #{phone}, address = #{address}
 			, sex = #{sex}, manager_id = #{manager_id}
 			WHERE user_id = #{user_id}
@@ -69,7 +69,7 @@
 		<update id="updateHelper" parameterType="com.nuribodeum.vo.HelperVO">
 			UPDATE HELPER
 			SET  name = #{name}, phone = #{phone}
-			, age = #{age}, organization = #{organization}
+			, date_if_birth = #{date_if_birth}, organization = #{organization}
 			WHERE helper_id = #{helper_id}
 		</update>
 		
