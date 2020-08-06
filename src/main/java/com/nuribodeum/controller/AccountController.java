@@ -57,31 +57,45 @@ public class AccountController {
 	
 	@PostMapping("/user")
 	public void postUser(HttpServletRequest request, HttpServletResponse response, @RequestBody UserVO vo) {
-		System.out.println("유저 추가");
+		System.out.println("누리미 추가");
 		System.out.println(vo);
-		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-		System.out.println("비크립트 해시 : " + vo.getPassword());
-		try {
-			accountMapper.insertUser(vo);
-			response.setStatus(HttpStatus.CREATED.value());
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.setStatus(HttpStatus.CONFLICT.value());
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account.getAccount_type().equals("manager")) {
+			vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+			System.out.println("비크립트 해시 : " + vo.getPassword());
+			try {
+				accountMapper.insertUser(vo);
+				response.setStatus(HttpStatus.CREATED.value());
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setStatus(HttpStatus.CONFLICT.value());
+			}
+		} else {
+			System.out.println("관리자만 누리미를 추가할 수 있습니다.");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
+		
 	}
 	
 	@PostMapping("/protector")
 	public void postProtector(HttpServletRequest request, HttpServletResponse response, @RequestBody ProtectorVO vo) {
 		System.out.println("보호자 추가");
 		System.out.println(vo);
-		vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
-		System.out.println("비크립트 해시 : " + vo.getPassword());
-		try {
-			accountMapper.insertProtector(vo);
-			response.setStatus(HttpStatus.CREATED.value());
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.setStatus(HttpStatus.CONFLICT.value());
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account.getAccount_type().equals("manager")) {
+			System.out.println("관리자 인증 성공");
+			vo.setPassword(BCrypt.hashpw(vo.getPassword(), BCrypt.gensalt()));
+			System.out.println("비크립트 해시 : " + vo.getPassword());
+			try {
+				accountMapper.insertProtector(vo);
+				response.setStatus(HttpStatus.CREATED.value());
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.setStatus(HttpStatus.CONFLICT.value());
+			}
+		} else {
+			System.out.println("관리자만 보호자를 추가할 수 있습니다.");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 	}
 	
@@ -189,16 +203,35 @@ public class AccountController {
 	public void updateManager(HttpServletRequest request, HttpServletResponse response, @RequestBody ManagerVO vo) {
 		System.out.println("매니저 수정");
 		System.out.println(vo);
-		accountMapper.updateManager(vo);
-		response.setStatus(HttpStatus.OK.value());
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account.getAccount_type().equals("manager") && vo.getManager_id().equals(account.getId())) { // 로그인 된 계정이 매니저이고 수정하려는 아이디랑 같아야함
+			accountMapper.updateManager(vo);
+			response.setStatus(HttpStatus.OK.value());
+		} else {
+			System.out.println("인증실패");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
+		
 	}
 	
 	@PutMapping("/user")
 	public void updateUser(HttpServletRequest request, HttpServletResponse response, @RequestBody UserVO vo) {
 		System.out.println("누리미 수정");
 		System.out.println(vo);
-		accountMapper.updateUser(vo);
-		response.setStatus(HttpStatus.OK.value());
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account != null) {
+			if(account.getAccount_type().equals("manager") ||		// 관리자계정이거나 누리미 본인일 경우만
+					(account.getAccount_type().equals("user") && account.getId().equals(vo.getUser_id()))) {
+				accountMapper.updateUser(vo);
+				response.setStatus(HttpStatus.OK.value());
+			} else {
+				System.out.println("인증실패");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			}
+		} else {
+			System.out.println("로그인 하셨나요..?");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
 	}
 	
 	@PutMapping("/protector")
@@ -283,5 +316,4 @@ public class AccountController {
 		System.out.println("매니저 얻기 : " + helper_id);
 		return accountMapper.getHelper(helper_id);
 	}
-	
 }
