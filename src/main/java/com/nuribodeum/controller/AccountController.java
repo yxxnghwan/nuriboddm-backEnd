@@ -116,11 +116,7 @@ public class AccountController {
 					System.out.println("매니저 로그인 성공");
 					loginID = manager.getManager_id();
 					String jwt = loginManagementService.createJWT(vo);
-					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
-					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
-					cookie.setPath("/");
-					cookie.setHttpOnly(true);
-					response.addCookie(cookie);
+					loginManagementService.issueJWT(jwt, response);
 					response.setStatus(HttpStatus.OK.value());
 					
 				} else { // 비밀번호 틀림
@@ -139,11 +135,7 @@ public class AccountController {
 					System.out.println("누리미 로그인 성공");
 					loginID = user.getUser_id();
 					String jwt = loginManagementService.createJWT(vo);
-					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
-					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
-					cookie.setPath("/");
-					cookie.setHttpOnly(true);
-					response.addCookie(cookie);
+					loginManagementService.issueJWT(jwt, response);
 					response.setStatus(HttpStatus.OK.value());
 					
 				} else { // 비밀번호 틀림
@@ -162,11 +154,7 @@ public class AccountController {
 					System.out.println("보호자 로그인 성공");
 					loginID = protector.getProtector_id();
 					String jwt = loginManagementService.createJWT(vo);
-					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
-					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
-					cookie.setPath("/");
-					cookie.setHttpOnly(true);
-					response.addCookie(cookie);
+					loginManagementService.issueJWT(jwt, response);
 					response.setStatus(HttpStatus.OK.value());
 					
 				} else { // 비밀번호 틀림
@@ -185,11 +173,7 @@ public class AccountController {
 					System.out.println("보드미 로그인 성공");
 					loginID = helper.getHelper_id();
 					String jwt = loginManagementService.createJWT(vo);
-					Cookie cookie = new Cookie(loginManagementService.getJWTCookieName(),jwt);
-					cookie.setMaxAge(60*60*24*180); // 만료시간 180일
-					cookie.setPath("/");
-					cookie.setHttpOnly(true);
-					response.addCookie(cookie);
+					loginManagementService.issueJWT(jwt, response);
 					response.setStatus(HttpStatus.OK.value());
 					
 				} else { // 비밀번호 틀림
