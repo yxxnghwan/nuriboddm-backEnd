@@ -23,4 +23,9 @@
 			SET progress = 'complete'
 			WHERE emergency_seq = #{emergency_seq}
 		</update>
+		<update id="failEmergency" parameterType="int">
+			UPDATE EMERGENCY
+			SET progress = 'failure'
+			WHERE emergency_seq = #{emergency_seq}
+		</update>
 	</mapper>

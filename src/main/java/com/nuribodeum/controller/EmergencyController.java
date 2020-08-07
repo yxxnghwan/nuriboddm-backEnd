@@ -66,6 +66,24 @@ public class EmergencyController {
 			System.out.println("로그인정보가 없습니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
-		
+	}
+	@PatchMapping("failure")
+	public void failEmergency(HttpServletRequest request, HttpServletResponse response, @RequestBody EmergencyVO vo) {
+		System.out.println("응급상황 실패");
+		vo = emergencyMapper.getEmergency(vo.getEmergency_seq());
+		System.out.println(vo);
+		AccountVO account = loginManagementService.signInCheck(request, response);
+		if(account != null) {
+			if(account.getAccount_type().equals("manager")) {
+				System.out.println("인증완료 응급상황 실패");
+				emergencyMapper.failEmergency(vo.getEmergency_seq());
+			} else {
+				System.out.println("관리자만 응급상황 실패가 가능합니다.");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			}
+		} else {
+			System.out.println("로그인정보가 없습니다.");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
 	}
 }

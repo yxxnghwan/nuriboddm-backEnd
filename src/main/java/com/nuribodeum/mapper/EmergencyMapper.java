@@ -13,4 +13,5 @@ public interface EmergencyMapper {
 	String whoseEmergency(int emergency_seq);
 	
 	void completeEmergency(int emergency_seq);
+	void failEmergency(int emergency_seq);
 }
