@@ -102,4 +102,12 @@ public class EmergencyController {
 		System.out.println("응급상황리스트조회");
 		return emergencyMapper.getEmergencyList();
 	}
+	
+	@GetMapping
+	public List<EmergencyVO> getUsersEmergencyList(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("누리미 응급상황내역");
+		String user_id = request.getParameter("user_id");
+		return emergencyMapper.getUsersEmergencyList(user_id);
+	}
+	
 }

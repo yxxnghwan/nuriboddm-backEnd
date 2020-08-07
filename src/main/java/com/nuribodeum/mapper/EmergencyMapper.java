@@ -17,6 +17,7 @@ public interface EmergencyMapper {
 	String whoseEmergency(int emergency_seq);
 	
 	List<EmergencyVO> getEmergencyList();
+	List<EmergencyVO> getUsersEmergencyList(String user_id);
 	
 	//U
 	void completeEmergency(int emergency_seq);

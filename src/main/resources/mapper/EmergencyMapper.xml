@@ -22,6 +22,11 @@
 			SELECT * FROM EMERGENCY
 		</select>
 		
+		<select id="getUsersEmergencyList" resultType="com.nuribodeum.vo.EmergencyVO" parameterType="String">
+			SELECT * FROM EMERGENCY
+			WHERE user_id = #{user_id}
+		</select>
+		
 		<update id="completeEmergency" parameterType="int">
 			UPDATE EMERGENCY
 			SET progress = 'complete'
