@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nuribodeum.config.LoginManagementService;
+import com.nuribodeum.mapper.EmergencyMapper;
 import com.nuribodeum.mapper.HelpMapper;
 import com.nuribodeum.vo.AccountVO;
 import com.nuribodeum.vo.HelpVO;
@@ -27,6 +28,9 @@ public class HelpController {
 	
 	@Autowired
 	HelpMapper helpMapper;
+	
+	@Autowired
+	EmergencyMapper emergencyMapper;
 	
 	@PostMapping
 	public void postHelp(HttpServletRequest request, HttpServletResponse response, @RequestBody HelpVO vo) {
@@ -47,8 +51,23 @@ public class HelpController {
 		}
 	}
 	
-	@PatchMapping
+	@PatchMapping("/complete")
 	public void completeHelp(HttpServletRequest request, HttpServletResponse response, @RequestBody HelpVO vo) {
-		
+		System.out.println("도움완료");
+		vo = helpMapper.getHelp(vo.getHelp_seq());
+		System.out.println(vo);
+		AccountVO account = loginManagermentService.signInCheck(request, response);
+		if(account != null) {
+			if(account.getAccount_type().equals("user") 
+					&& account.getId().equals(emergencyMapper.whoseEmergency(vo.getEmergency_seq()))) {
+					helpMapper.completeHelp(vo.getHelp_seq());
+			} else {
+				System.out.println("도움완료는 누리미가 할 수 있습니다.");
+				response.setStatus(HttpStatus.UNAUTHORIZED.value());
+			}
+		} else {
+			System.out.println("로그인 정보 없음");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
 	}
 }

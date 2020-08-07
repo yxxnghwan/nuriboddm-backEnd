@@ -7,4 +7,9 @@
 			INSERT INTO EMERGENCY(latitude, longitude, heart_rate, user_id)
 			VALUES( #{latitude}, #{longitude}, #{heart_rate}, #{user_id})
 		</insert>
+		
+		<select id="whoseEmergency" parameterType="int" resultType="String">
+			SELECT user_id FROM EMERGENCY
+			WHERE emergency_seq = #{emergency_seq}
+		</select>
 	</mapper>
