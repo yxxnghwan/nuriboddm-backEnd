@@ -6,7 +6,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,5 +87,10 @@ public class EmergencyController {
 			System.out.println("로그인정보가 없습니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
+	}
+	
+	@GetMapping("/{emergency_seq}")
+	public EmergencyVO getEmergency(HttpServletRequest request, HttpServletResponse response, @PathVariable("emergency_seq") int emergency_seq) {
+		return emergencyMapper.getEmergency(emergency_seq);
 	}
 }
