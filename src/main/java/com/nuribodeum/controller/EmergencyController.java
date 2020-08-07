@@ -109,5 +109,4 @@ public class EmergencyController {
 		String user_id = request.getParameter("user_id");
 		return emergencyMapper.getUsersEmergencyList(user_id);
 	}
-	
 }

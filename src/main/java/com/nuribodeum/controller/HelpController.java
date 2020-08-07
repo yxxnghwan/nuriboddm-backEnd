@@ -1,12 +1,16 @@
 package com.nuribodeum.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -49,6 +53,17 @@ public class HelpController {
 			System.out.println("로그인 정보 없음");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
+	}
+	
+	@GetMapping("/list")
+	public List<HelpVO> getHelpList(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("총 도움내역");
+		return helpMapper.getHelpList();
+	}
+	
+	@GetMapping("/{help_seq}")
+	public HelpVO getHelp(HttpServletRequest request, HttpServletResponse response, @PathVariable("help_seq") int help_seq) {
+		return helpMapper.getHelp(help_seq);
 	}
 	
 	@PatchMapping("/complete")

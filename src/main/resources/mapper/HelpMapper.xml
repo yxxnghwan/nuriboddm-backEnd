@@ -8,14 +8,20 @@
 			VALUES(#{emergency_seq}, #{helper_id})
 		</insert>
 		
+		<select id="getHelp" parameterType="int" resultType="com.nuribodeum.vo.HelpVO">
+			SELECT * FROM HELP
+			WHERE help_seq = #{help_seq}
+		</select>
+		
+		<select id="getHelpList" resultType="com.nuribodeum.vo.HelpVO">
+			SELECT * FROM HELP
+		</select>
+		
 		<update id="completeHelp" parameterType="int">
 			UPDATE HELP
 			SET complete = true
 			WHERE help_seq = #{help_seq}
 		</update>
 		
-		<select id="getHelp" parameterType="int" resultType="com.nuribodeum.vo.HelpVO">
-			SELECT * FROM HELP
-			WHERE help_seq = #{help_seq}
-		</select>
+		
 	</mapper>
