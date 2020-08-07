@@ -4,12 +4,23 @@
 	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 	<mapper namespace="com.nuribodeum.mapper.EmergencyMapper">
 		<insert id="insertEmergency" parameterType="com.nuribodeum.vo.EmergencyVO">
-			INSERT INTO EMERGENCY(latitude, longitude, heart_rate, user_id)
-			VALUES( #{latitude}, #{longitude}, #{heart_rate}, #{user_id})
+			INSERT INTO EMERGENCY(latitude, longitude, heart_rate, door_lock_key, user_id)
+			VALUES( #{latitude}, #{longitude}, #{heart_rate}, #{door_lock_key}, #{user_id})
 		</insert>
+		
+		<select id="getEmergency" parameterType="int" resultType="com.nuribodeum.vo.EmergencyVO">
+			SELECT * FROM EMERGENCY
+			WHERE emergency_seq = #{emergency_seq}
+		</select>
 		
 		<select id="whoseEmergency" parameterType="int" resultType="String">
 			SELECT user_id FROM EMERGENCY
 			WHERE emergency_seq = #{emergency_seq}
 		</select>
+		
+		<update id="completeEmergency" parameterType="int">
+			UPDATE EMERGENCY
+			SET progress = 'complete'
+			WHERE emergency_seq = #{emergency_seq}
+		</update>
 	</mapper>
