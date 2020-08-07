@@ -10,6 +10,7 @@ public @Data class EmergencyVO {
 	private double latitude;
 	private double longitude;
 	private double heart_rate;
+	private String progress;
 	private String door_lock_key;
 	private String user_id;
 }

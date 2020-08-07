@@ -18,6 +18,10 @@
 			WHERE emergency_seq = #{emergency_seq}
 		</select>
 		
+		<select id="getEmergencyList" resultType="com.nuribodeum.vo.EmergencyVO">
+			SELECT * FROM EMERGENCY
+		</select>
+		
 		<update id="completeEmergency" parameterType="int">
 			UPDATE EMERGENCY
 			SET progress = 'complete'

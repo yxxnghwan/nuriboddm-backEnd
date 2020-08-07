@@ -1,5 +1,7 @@
 package com.nuribodeum.controller;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -91,6 +93,13 @@ public class EmergencyController {
 	
 	@GetMapping("/{emergency_seq}")
 	public EmergencyVO getEmergency(HttpServletRequest request, HttpServletResponse response, @PathVariable("emergency_seq") int emergency_seq) {
+		System.out.println("응급상황조회");
 		return emergencyMapper.getEmergency(emergency_seq);
+	}
+	
+	@GetMapping("/list")
+	public List<EmergencyVO> getEmergencyList(HttpServletRequest request, HttpServletResponse response) {
+		System.out.println("응급상황리스트조회");
+		return emergencyMapper.getEmergencyList();
 	}
 }
