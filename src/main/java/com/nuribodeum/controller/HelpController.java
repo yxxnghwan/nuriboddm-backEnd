@@ -117,5 +117,14 @@ public class HelpController {
 		}
 		return helpList;
 	}
+	@GetMapping("/date/{strDate}")
+	public List<HelpVO> getDateHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("strDate") String strDate) {
+		System.out.println("일별도움내역");
+		List<HelpVO> helpList = helpMapper.getDateHelpList(strDate);
+		for(HelpVO help : helpList) {
+			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+		}
+		return helpList;
+	}
 	
 }

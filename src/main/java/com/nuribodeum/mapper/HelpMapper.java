@@ -17,6 +17,7 @@ public interface HelpMapper {
 	List<HelpVO> getHelpersHelpList(String helper_id);
 	List<HelpVO> getUsersHelpList(String user_id);
 	List<HelpVO> getMonthHelpList(String strMonth);
+	List<HelpVO> getDateHelpList(String strDate);
 	
 	//U
 	void completeHelp(int help_seq);

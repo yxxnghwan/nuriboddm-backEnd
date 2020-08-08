@@ -33,6 +33,11 @@
 			WHERE date_format(complete_time, '%Y-%m') = #{strMonth};
 		</select>
 		
+		<select id="getDateHelpList" parameterType="String" resultType="com.nuribodeum.vo.HelpVO">
+			SELECT * FROM HELP
+			WHERE date_format(complete_time, '%Y-%m-%d') = #{strDate};
+		</select>
+		
 		<update id="completeHelp" parameterType="int">
 			UPDATE HELP
 			SET complete = true, complete_time = now()
