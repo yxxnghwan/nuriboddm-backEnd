@@ -17,6 +17,11 @@
 			SELECT * FROM HELP
 		</select>
 		
+		<select id="getHelpersHelpList" parameterType="String" resultType="com.nuribodeum.vo.HelpVO">
+			SELECT * FROM HELP
+			WHERE helper_id = #{helper_id}
+		</select>
+		
 		<update id="completeHelp" parameterType="int">
 			UPDATE HELP
 			SET complete = true

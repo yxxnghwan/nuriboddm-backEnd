@@ -7,4 +7,5 @@ public @Data class HelpVO {
 	private int emergency_seq;
 	private String helper_id;
 	private boolean complete;
+	private EmergencyVO emergency;
 }

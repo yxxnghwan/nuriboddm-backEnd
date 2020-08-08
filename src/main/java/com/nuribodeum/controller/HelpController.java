@@ -63,7 +63,9 @@ public class HelpController {
 	
 	@GetMapping("/{help_seq}")
 	public HelpVO getHelp(HttpServletRequest request, HttpServletResponse response, @PathVariable("help_seq") int help_seq) {
-		return helpMapper.getHelp(help_seq);
+		HelpVO help = helpMapper.getHelp(help_seq);
+		help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+		return help;
 	}
 	
 	@PatchMapping("/complete")
@@ -85,4 +87,15 @@ public class HelpController {
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 	}
+	
+	@GetMapping("/helper/{helper_id}")
+	public List<HelpVO> getHelpersHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("helper_id") String helper_id) {
+		System.out.println("보드미가 준 도움내역");
+		List<HelpVO> helpList = helpMapper.getHelpersHelpList(helper_id);
+		for(HelpVO help : helpList) {
+			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+		}
+		return helpList;
+	}
+	
 }
