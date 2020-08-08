@@ -98,4 +98,14 @@ public class HelpController {
 		return helpList;
 	}
 	
+	@GetMapping("/user/{user_id}")
+	public List<HelpVO> getUsersHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("user_id") String user_id) {
+		System.out.println("누리미가 받은 도움 내역");
+		List<HelpVO> helpList = helpMapper.getUsersHelpList(user_id);
+		for(HelpVO help : helpList) {
+			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+		}
+		return helpList;
+	}
+	
 }

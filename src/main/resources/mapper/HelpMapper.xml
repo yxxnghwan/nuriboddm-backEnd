@@ -22,6 +22,12 @@
 			WHERE helper_id = #{helper_id}
 		</select>
 		
+		<select id="getUsersHelpList" parameterType="String" resultType="com.nuribodeum.vo.HelpVO">
+			SELECT * FROM HELP, EMERGENCY
+			WHERE HELP.emergency_seq = EMERGENCY.emergency_seq
+			AND user_id = #{user_id}
+		</select>
+		
 		<update id="completeHelp" parameterType="int">
 			UPDATE HELP
 			SET complete = true
