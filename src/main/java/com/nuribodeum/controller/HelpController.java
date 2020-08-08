@@ -108,4 +108,14 @@ public class HelpController {
 		return helpList;
 	}
 	
+	@GetMapping("/month/{strMonth}")
+	public List<HelpVO> getMonthHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("strMonth") String strMonth) {
+		System.out.println("월별도움내역");
+		List<HelpVO> helpList = helpMapper.getMonthHelpList(strMonth);
+		for(HelpVO help : helpList) {
+			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+		}
+		return helpList;
+	}
+	
 }

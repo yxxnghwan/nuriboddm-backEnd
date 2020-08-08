@@ -28,9 +28,14 @@
 			AND user_id = #{user_id}
 		</select>
 		
+		<select id="getMonthHelpList" parameterType="String" resultType="com.nuribodeum.vo.HelpVO">
+			SELECT * FROM HELP
+			WHERE date_format(complete_time, '%Y-%m') = #{strMonth};
+		</select>
+		
 		<update id="completeHelp" parameterType="int">
 			UPDATE HELP
-			SET complete = true
+			SET complete = true, complete_time = now()
 			WHERE help_seq = #{help_seq}
 		</update>
 		
