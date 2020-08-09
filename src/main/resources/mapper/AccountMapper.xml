@@ -69,7 +69,7 @@
 		
 		<update id="updateUser" parameterType="com.nuribodeum.vo.UserVO">
 			UPDATE USER
-			SET  name = #{name}, date_if_birth = #{date_if_birth}
+			SET  name = #{name}, date_of_birth = #{date_of_birth}
 			, illness = #{illness}, phone = #{phone}, address = #{address}
 			, sex = #{sex}, manager_id = #{manager_id}
 			WHERE user_id = #{user_id}
@@ -85,7 +85,7 @@
 		<update id="updateHelper" parameterType="com.nuribodeum.vo.HelperVO">
 			UPDATE HELPER
 			SET  name = #{name}, phone = #{phone}
-			, date_if_birth = #{date_if_birth}, organization = #{organization}
+			, date_of_birth = #{date_of_birth}, organization = #{organization}
 			WHERE helper_id = #{helper_id}
 		</update>
 		

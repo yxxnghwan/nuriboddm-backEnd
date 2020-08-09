@@ -80,8 +80,6 @@ public class AccountController {
 			System.out.println("로그인 했나요..?");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
-		
-		
 	}
 	
 	@PostMapping("/protector")

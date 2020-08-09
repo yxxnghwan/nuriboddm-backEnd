@@ -126,5 +126,4 @@ public class HelpController {
 		}
 		return helpList;
 	}
-	
 }
