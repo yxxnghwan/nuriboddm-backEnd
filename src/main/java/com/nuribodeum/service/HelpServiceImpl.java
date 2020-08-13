@@ -3,10 +3,12 @@ package com.nuribodeum.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.nuribodeum.mapper.HelpMapper;
 import com.nuribodeum.vo.HelpVO;
 
+@Service("helpService")
 public class HelpServiceImpl implements HelpService{
 	
 	@Autowired

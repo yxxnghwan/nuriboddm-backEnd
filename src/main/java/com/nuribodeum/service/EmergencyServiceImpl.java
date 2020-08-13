@@ -3,10 +3,12 @@ package com.nuribodeum.service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import com.nuribodeum.mapper.EmergencyMapper;
 import com.nuribodeum.vo.EmergencyVO;
 
+@Service("emergencyService")
 public class EmergencyServiceImpl implements EmergencyService{
 
 	@Autowired

@@ -17,8 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nuribodeum.config.LoginManagement;
-import com.nuribodeum.mapper.EmergencyMapper;
-import com.nuribodeum.mapper.HelpMapper;
+import com.nuribodeum.service.EmergencyService;
+import com.nuribodeum.service.HelpService;
 import com.nuribodeum.vo.AccountVO;
 import com.nuribodeum.vo.HelpVO;
 
@@ -28,10 +28,10 @@ import com.nuribodeum.vo.HelpVO;
 public class HelpController {
 	
 	@Autowired
-	HelpMapper helpMapper;
+	HelpService helpService;
 	
 	@Autowired
-	EmergencyMapper emergencyMapper;
+	EmergencyService emergencyService;
 	
 	@PostMapping
 	public void postHelp(HttpServletRequest request, HttpServletResponse response, @RequestBody HelpVO vo) {
@@ -41,7 +41,7 @@ public class HelpController {
 		
 		if(account.getAccount_type().equals("helper") && account.getId().equals(vo.getHelper_id())) {
 			System.out.println("인증성공 도움등록");
-			helpMapper.insertHelp(vo);
+			helpService.insertHelp(vo);
 		} else {
 			System.out.println("보드미 본인만 도움을 등록할 수 있습니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -52,13 +52,13 @@ public class HelpController {
 	@PatchMapping("/complete")
 	public void completeHelp(HttpServletRequest request, HttpServletResponse response, @RequestBody HelpVO vo) {
 		System.out.println("도움완료");
-		vo = helpMapper.getHelp(vo.getHelp_seq());
+		vo = helpService.getHelp(vo.getHelp_seq());
 		System.out.println(vo);
 		AccountVO account = LoginManagement.signInCheck(request, response);
 		
 		if(account.getAccount_type().equals("user") 
-				&& account.getId().equals(emergencyMapper.whoseEmergency(vo.getEmergency_seq()))) {
-				helpMapper.completeHelp(vo.getHelp_seq());
+				&& account.getId().equals(emergencyService.whoseEmergency(vo.getEmergency_seq()))) {
+			helpService.completeHelp(vo.getHelp_seq());
 		} else {
 			System.out.println("도움완료는 누리미가 할 수 있습니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
@@ -68,22 +68,22 @@ public class HelpController {
 	@GetMapping("/list")
 	public List<HelpVO> getHelpList(HttpServletRequest request, HttpServletResponse response) {
 		System.out.println("총 도움내역");
-		return helpMapper.getHelpList();
+		return helpService.getHelpList();
 	}
 	
 	@GetMapping("/{help_seq}")
 	public HelpVO getHelp(HttpServletRequest request, HttpServletResponse response, @PathVariable("help_seq") int help_seq) {
-		HelpVO help = helpMapper.getHelp(help_seq);
-		help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+		HelpVO help = helpService.getHelp(help_seq);
+		help.setEmergency(emergencyService.getEmergency(help.getEmergency_seq()));
 		return help;
 	}
 	
 	@GetMapping("/helper/{helper_id}")
 	public List<HelpVO> getHelpersHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("helper_id") String helper_id) {
 		System.out.println("보드미가 준 도움내역");
-		List<HelpVO> helpList = helpMapper.getHelpersHelpList(helper_id);
+		List<HelpVO> helpList = helpService.getHelpersHelpList(helper_id);
 		for(HelpVO help : helpList) {
-			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+			help.setEmergency(emergencyService.getEmergency(help.getEmergency_seq()));
 		}
 		return helpList;
 	}
@@ -91,9 +91,9 @@ public class HelpController {
 	@GetMapping("/user/{user_id}")
 	public List<HelpVO> getUsersHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("user_id") String user_id) {
 		System.out.println("누리미가 받은 도움 내역");
-		List<HelpVO> helpList = helpMapper.getUsersHelpList(user_id);
+		List<HelpVO> helpList = helpService.getUsersHelpList(user_id);
 		for(HelpVO help : helpList) {
-			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+			help.setEmergency(emergencyService.getEmergency(help.getEmergency_seq()));
 		}
 		return helpList;
 	}
@@ -101,18 +101,18 @@ public class HelpController {
 	@GetMapping("/month/{strMonth}")
 	public List<HelpVO> getMonthHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("strMonth") String strMonth) {
 		System.out.println("월별도움내역");
-		List<HelpVO> helpList = helpMapper.getMonthHelpList(strMonth);
+		List<HelpVO> helpList = helpService.getMonthHelpList(strMonth);
 		for(HelpVO help : helpList) {
-			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+			help.setEmergency(emergencyService.getEmergency(help.getEmergency_seq()));
 		}
 		return helpList;
 	}
 	@GetMapping("/date/{strDate}")
 	public List<HelpVO> getDateHelpList(HttpServletRequest request, HttpServletResponse response, @PathVariable("strDate") String strDate) {
 		System.out.println("일별도움내역");
-		List<HelpVO> helpList = helpMapper.getDateHelpList(strDate);
+		List<HelpVO> helpList = helpService.getDateHelpList(strDate);
 		for(HelpVO help : helpList) {
-			help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
+			help.setEmergency(emergencyService.getEmergency(help.getEmergency_seq()));
 		}
 		return helpList;
 	}
