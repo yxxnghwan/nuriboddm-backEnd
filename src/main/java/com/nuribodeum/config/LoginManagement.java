@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.stereotype.Service;
@@ -22,21 +23,26 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 
-@Service
-public class LoginManagementService {
+@Configuration
+public class LoginManagement {
 	
 	@Value("${jwtkey}")
-	private String JWTkey;
+	private static String JWTkey;
 	
-	private String headerName = "Authorization";
+	private static String headerName = "Authorization";
+	
+	@Value("${jwtkey}")
+	public void setJWTkey(String jWTkey) {
+		JWTkey = jWTkey;
+	}
 
-	public LoginManagementService() {
+	public LoginManagement() {
 		// TODO Auto-generated constructor stub
 		System.out.println("[Login Management Service] 생성 완료");
 	}
 	
 	// JWT생성
-	public String createJWT(AccountVO vo) {
+	public static String createJWT(AccountVO vo) {
 			
 		Map<String, Object> headers = new HashMap<String, Object>();
 		headers.put("typ", "JWT");
@@ -56,18 +62,18 @@ public class LoginManagementService {
 		String jwt = Jwts.builder()
 							.setHeader(headers)
 							.setClaims(payloads)
-							.signWith(SignatureAlgorithm.HS256, JWTkey.getBytes())
+							.signWith(SignatureAlgorithm.HS256, LoginManagement.JWTkey.getBytes())
 							.compact();
 		return jwt;
 	}
 		
 	// JWT 디코딩
-	public AccountVO getAccountFromJwtString(String jwtTokenString, HttpServletRequest request, HttpServletResponse response) {
+	public static AccountVO getAccountFromJwtString(String jwtTokenString, HttpServletRequest request, HttpServletResponse response) {
 		AccountVO account = null;
 		
 		try {
 			Claims claims = Jwts.parser()
-							.setSigningKey(JWTkey.getBytes())
+							.setSigningKey(LoginManagement.JWTkey.getBytes())
 							.parseClaimsJws(jwtTokenString)
 							.getBody();
 		
@@ -87,11 +93,11 @@ public class LoginManagementService {
 			else if(expiration.getTime()-1000*60*60*24*90 < now.getTime()) {
 				System.out.println("토큰기간이 얼마 안남아서 리프레쉬함");
 				System.out.println("원래 jwt : " + jwtTokenString);
-				String newJWT = createJWT(account);
+				String newJWT = LoginManagement.createJWT(account);
 				System.out.println("바꾼 jwt : " + newJWT);
 				// 다시 헤더에 넣어줌
-				response.setHeader(headerName, newJWT);
-				account = getAccountFromJwtString(newJWT, request, response);
+				response.setHeader(LoginManagement.headerName, newJWT);
+				account = LoginManagement.getAccountFromJwtString(newJWT, request, response);
 				response.setStatus(HttpStatus.RESET_CONTENT.value());
 			}
 		} catch(JwtException e) {
@@ -103,25 +109,25 @@ public class LoginManagementService {
 	}
 		
 	// 로그인 체크
-	public AccountVO signInCheck(HttpServletRequest request, HttpServletResponse response) {
+	public static AccountVO signInCheck(HttpServletRequest request, HttpServletResponse response) {
 		AccountVO account = null;
 		String readJWT = request.getHeader(headerName);
 		if(readJWT != null) {
 			// jwt 디코딩해서 정보 확인
-			account = getAccountFromJwtString(readJWT, request, response);
+			account = LoginManagement.getAccountFromJwtString(readJWT, request, response);
 				
 			// 만료 확인
 			if(account == null) {
 				System.out.println("기간만료된 토큰");
-				response.setHeader(headerName, "killed");
+				response.setHeader(LoginManagement.headerName, "killed");
 				response.setStatus(HttpStatus.NO_CONTENT.value());
 			}
 		}
 		return account;
 	}
 	// JWT 발급
-	public void issueJWT(String jwt, HttpServletResponse response) {
+	public static void issueJWT(String jwt, HttpServletResponse response) {
 		System.out.println("헤더에 토큰을 발급합니다.");
-		response.setHeader(headerName, jwt);
+		response.setHeader(LoginManagement.headerName, jwt);
 	}
 }

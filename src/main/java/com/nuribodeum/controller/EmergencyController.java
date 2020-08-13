@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nuribodeum.config.LoginManagementService;
+import com.nuribodeum.config.LoginManagement;
 import com.nuribodeum.mapper.EmergencyMapper;
 import com.nuribodeum.vo.AccountVO;
 import com.nuribodeum.vo.EmergencyVO;
@@ -26,8 +26,6 @@ import com.nuribodeum.vo.EmergencyVO;
 @RequestMapping("/emergency")
 public class EmergencyController {
 	
-	@Autowired
-	LoginManagementService loginManagementService;
 	
 	@Autowired
 	EmergencyMapper emergencyMapper;
@@ -36,17 +34,13 @@ public class EmergencyController {
 	public void postEmergency(HttpServletRequest request, HttpServletResponse response, @RequestBody EmergencyVO vo) {
 		System.out.println("응급상황 등록");
 		System.out.println(vo);
-		AccountVO account = loginManagementService.signInCheck(request, response);
-		if(account != null) {
-			if(account.getAccount_type().equals("user") && account.getId().equals(vo.getUser_id())) { // 유저고 본인이어야함
-				System.out.println("인증성공 응급상황등록");
-				emergencyMapper.insertEmergency(vo);
-			} else {
-				System.out.println("유저 본인만 응급상황 등록이 가능합니다.");
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			}
+		AccountVO account = (AccountVO)request.getAttribute("account");
+		
+		if(account.getAccount_type().equals("user") && account.getId().equals(vo.getUser_id())) { // 유저고 본인이어야함
+			System.out.println("인증성공 응급상황등록");
+			emergencyMapper.insertEmergency(vo);
 		} else {
-			System.out.println("로그인정보가 없습니다.");
+			System.out.println("유저 본인만 응급상황 등록이 가능합니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 	}
@@ -56,18 +50,14 @@ public class EmergencyController {
 		System.out.println("응급상황 완료");
 		vo = emergencyMapper.getEmergency(vo.getEmergency_seq());
 		System.out.println(vo);
-		AccountVO account = loginManagementService.signInCheck(request, response);
-		if(account != null) {
-			if(account.getAccount_type().equals("manager") || // 매니저거나 누리미 본인
-					(account.getAccount_type().equals("user") && account.getId().equals(vo.getUser_id()))) {
-				System.out.println("인증완료 응급상황 완료");
-				emergencyMapper.completeEmergency(vo.getEmergency_seq());
-			} else {
-				System.out.println("관리자나 유저 본인만 응급상황 완료가 가능합니다.");
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			}
+		AccountVO account = (AccountVO)request.getAttribute("account");
+		
+		if(account.getAccount_type().equals("manager") || // 매니저거나 누리미 본인
+				(account.getAccount_type().equals("user") && account.getId().equals(vo.getUser_id()))) {
+			System.out.println("인증완료 응급상황 완료");
+			emergencyMapper.completeEmergency(vo.getEmergency_seq());
 		} else {
-			System.out.println("로그인정보가 없습니다.");
+			System.out.println("관리자나 유저 본인만 응급상황 완료가 가능합니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 	}
@@ -76,17 +66,13 @@ public class EmergencyController {
 		System.out.println("응급상황 실패");
 		vo = emergencyMapper.getEmergency(vo.getEmergency_seq());
 		System.out.println(vo);
-		AccountVO account = loginManagementService.signInCheck(request, response);
-		if(account != null) {
-			if(account.getAccount_type().equals("manager")) {
-				System.out.println("인증완료 응급상황 실패");
-				emergencyMapper.failEmergency(vo.getEmergency_seq());
-			} else {
-				System.out.println("관리자만 응급상황 실패가 가능합니다.");
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			}
+		AccountVO account = (AccountVO)request.getAttribute("account");
+		
+		if(account.getAccount_type().equals("manager")) {
+			System.out.println("인증완료 응급상황 실패");
+			emergencyMapper.failEmergency(vo.getEmergency_seq());
 		} else {
-			System.out.println("로그인정보가 없습니다.");
+			System.out.println("관리자만 응급상황 실패가 가능합니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 	}

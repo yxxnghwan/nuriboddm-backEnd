@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nuribodeum.config.LoginManagementService;
+import com.nuribodeum.config.LoginManagement;
 import com.nuribodeum.mapper.EmergencyMapper;
 import com.nuribodeum.mapper.HelpMapper;
 import com.nuribodeum.vo.AccountVO;
@@ -28,9 +28,6 @@ import com.nuribodeum.vo.HelpVO;
 public class HelpController {
 	
 	@Autowired
-	LoginManagementService loginManagermentService;
-	
-	@Autowired
 	HelpMapper helpMapper;
 	
 	@Autowired
@@ -40,17 +37,30 @@ public class HelpController {
 	public void postHelp(HttpServletRequest request, HttpServletResponse response, @RequestBody HelpVO vo) {
 		System.out.println("도움등록");
 		System.out.println(vo);
-		AccountVO account = loginManagermentService.signInCheck(request, response);
-		if(account != null) {
-			if(account.getAccount_type().equals("helper") && account.getId().equals(vo.getHelper_id())) {
-				System.out.println("인증성공 도움등록");
-				helpMapper.insertHelp(vo);
-			} else {
-				System.out.println("보드미 본인만 도움을 등록할 수 있습니다.");
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			}
+		AccountVO account = LoginManagement.signInCheck(request, response);
+		
+		if(account.getAccount_type().equals("helper") && account.getId().equals(vo.getHelper_id())) {
+			System.out.println("인증성공 도움등록");
+			helpMapper.insertHelp(vo);
 		} else {
-			System.out.println("로그인 정보 없음");
+			System.out.println("보드미 본인만 도움을 등록할 수 있습니다.");
+			response.setStatus(HttpStatus.UNAUTHORIZED.value());
+		}
+	}
+	
+	
+	@PatchMapping("/complete")
+	public void completeHelp(HttpServletRequest request, HttpServletResponse response, @RequestBody HelpVO vo) {
+		System.out.println("도움완료");
+		vo = helpMapper.getHelp(vo.getHelp_seq());
+		System.out.println(vo);
+		AccountVO account = LoginManagement.signInCheck(request, response);
+		
+		if(account.getAccount_type().equals("user") 
+				&& account.getId().equals(emergencyMapper.whoseEmergency(vo.getEmergency_seq()))) {
+				helpMapper.completeHelp(vo.getHelp_seq());
+		} else {
+			System.out.println("도움완료는 누리미가 할 수 있습니다.");
 			response.setStatus(HttpStatus.UNAUTHORIZED.value());
 		}
 	}
@@ -66,26 +76,6 @@ public class HelpController {
 		HelpVO help = helpMapper.getHelp(help_seq);
 		help.setEmergency(emergencyMapper.getEmergency(help.getEmergency_seq()));
 		return help;
-	}
-	
-	@PatchMapping("/complete")
-	public void completeHelp(HttpServletRequest request, HttpServletResponse response, @RequestBody HelpVO vo) {
-		System.out.println("도움완료");
-		vo = helpMapper.getHelp(vo.getHelp_seq());
-		System.out.println(vo);
-		AccountVO account = loginManagermentService.signInCheck(request, response);
-		if(account != null) {
-			if(account.getAccount_type().equals("user") 
-					&& account.getId().equals(emergencyMapper.whoseEmergency(vo.getEmergency_seq()))) {
-					helpMapper.completeHelp(vo.getHelp_seq());
-			} else {
-				System.out.println("도움완료는 누리미가 할 수 있습니다.");
-				response.setStatus(HttpStatus.UNAUTHORIZED.value());
-			}
-		} else {
-			System.out.println("로그인 정보 없음");
-			response.setStatus(HttpStatus.UNAUTHORIZED.value());
-		}
 	}
 	
 	@GetMapping("/helper/{helper_id}")
